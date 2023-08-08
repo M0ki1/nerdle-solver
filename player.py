@@ -11,67 +11,76 @@ def remove_bads(options,info,play):
 	dic = {'2':set(),'1':set(),'0':set()}
 	new_options = []
 	for i in range(len(info)):
-			if info[i] == '0':
-				dic[info[i]].add(play[i])
-			else:
 				dic[info[i]].add((play[i],i))
-	
-	if len(dic['2'])>0:
-		accepted = [x[0] for x in dic['2']]
-		for e in accepted:
-			if e in dic['0']:
-				options.pop(options.index(play))
-				dic['0'].remove(e)
-				
-	for eq in options:
-		not_in_eq = True
-		not_same_pos_1= True
-		fixed_number = True
-		for key in dic:
-			if key=='0':
+	correct = [x[0] for x in dic['2']]
+	in_correct = [x[0] for x in dic['0']]
+	semi_correct = [x[0] for x in dic['1']]
 
-				#Si estan no las quiero
-				for e in dic[key]:
-					if e in eq:
-						not_in_eq = False
-			elif key == '1':
-				for ch,pos in dic[key]:
-					if eq[pos] ==ch:
-						not_same_pos_1 = False
-			elif key=='2':
-				for ch,pos in dic[key]:
-					if eq[pos] != ch:
-						fixed_number = False
-		if not_in_eq and not_same_pos_1 and fixed_number:
-			new_options.append(eq)
-		else:
-			continue
+	print(dic)
+	# for e in options:
+	# 	print(e)
+	if len(correct)>1 and len(in_correct)>1:
+		for eq in options:
+			not_in_eq = True
+			not_same_pos_1= True
+			not_same_pos_2= True
+
+			fixed_number = True
+			for key in dic:
+				if key=='0':
+
+					#Si estan no las quiero
+					for ch,pos in dic[key]:
+						if ch in correct or ch in semi_correct:
+							if eq[pos]==ch:
+								not_same_pos_2= False
+
+						elif ch in eq:
+							not_in_eq = False
+				elif key == '1':
+					for ch,pos in dic[key]:
+						if eq[pos] ==ch:
+							not_same_pos_1 = False
+				elif key=='2':
+					for ch,pos in dic[key]:
+						if eq[pos] != ch:
+							fixed_number = False
+			if not_in_eq and not_same_pos_1 and fixed_number and not_same_pos_2:
+				new_options.append(eq)
+			else:
+				continue
+	else:
+		for eq in options:
+			not_in_eq = True
+			not_same_pos_1= True
+			fixed_number = True
+			for key in dic:
+				if key=='0':
+
+					#Si estan no las quiero
+					for ch,pos in dic[key]:
+						if ch in eq:
+							not_in_eq = False
+				elif key == '1':
+					for ch,pos in dic[key]:
+						if eq[pos] ==ch:
+							not_same_pos_1 = False
+				elif key=='2':
+					for ch,pos in dic[key]:
+						if eq[pos] != ch:
+							fixed_number = False
+			if not_in_eq and not_same_pos_1 and fixed_number:
+				new_options.append(eq)
+			else:
+				continue
 
 	return new_options
 
 
-
-
-
-
-
-
-# # Obtener juegos activos
-# response = requests.get(f'{base_url}/api/games/')
-# games = response.json()['games']
-# games_len_5 = []
-
-# for dic in games:
-# 	if dic['eq_length'] == 5:
-# 		games_len_5.append(dic['id'])
-
-# for g in games_len_5: #lista con los dics de cada juego
-#   print(g)
-
 options = load_possible_equations()
 
 player_key = 'MUNO206'
-game = 16
+game = 15
 #6 opener 10-4=6
 #7 opener 34-29=5
 #8 opener 12+36=48
