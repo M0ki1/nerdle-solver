@@ -3,7 +3,7 @@ import re
 base_url = 'https://pds-nerdle-b475e73d0e76.herokuapp.com'
 
 def load_possible_equations():
-	file=open('options/5.txt')
+	file=open('options/8.txt')
 	options = [line.strip() for line in file]
 	return options
 #lo que tengo que hacer es verificar 
@@ -71,8 +71,11 @@ def remove_bads(options,info,play):
 options = load_possible_equations()
 
 player_key = 'MUNO206'
-game = 1
-equality = '1+2=3'
+game = 16
+#6 opener 10-4=6
+#7 opener 34-29=5
+#8 opener 12+36=48
+equality = '12+36=48'
 data = {
     'game': game,
     'key': player_key,
@@ -84,13 +87,11 @@ r = r.json()
 i=1
 
 while(not r['finished']):
-	print(r)
 	options = remove_bads(options,r['result'][0],equality)
 	print(f"posibles opciones: {len(options)}")
-	for x in options:
-		print(x)
+
 	print(f"Recomendamos probar con: {options[0]}")
-	equality = input('>>> ')
+	equality = options[0]
 	data = {
     'game': game,
     'key': player_key,
